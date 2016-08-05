@@ -13,10 +13,13 @@
       {% if showForm %}
         <form action="/tweets" method="POST">
           <label for="name_field">Name:</label>
-          <input name="name" type="text" id="name_field" value="{{ username }}"/>
+          <input name="name" type="text" id="name_field" value="{{ username }}"/><br>
 
           <label for="text_field">Text:</label>
-          <input name="content" type="text" id="text_field" />
+          <input name="content" type="text" id="text_field" /><br>
+
+          <label for="tag_field">Tags:</label>
+          <input name="tags" type="text" id="tag_field" /><br>
 
           <input type="submit" value="Submit" />
         </form>

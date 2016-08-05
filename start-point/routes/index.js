@@ -47,7 +47,6 @@ module.exports = function makeRouterWithSockets (io) {
 
     client.query('DELETE FROM tweets WHERE id=$1', [req.params.id], function (err, result) {
       if (err) return next(err);// pass errors to Express
-      console.log(req);
       var tweets = result.rows;
       res.redirect(req.get('referer'));
     });
@@ -56,23 +55,28 @@ module.exports = function makeRouterWithSockets (io) {
 
   // create a new tweet
   router.post('/tweets', function(req, res, next){
-
     var name = req.body.name;
     var content = req.body.content;
+    var tags = req.body.tags.match(/\w+/g) || [];
+    console.log(tags);
 
     client.query('SELECT * FROM Users WHERE name=$1', [name], function (err, result) {
       if (err) return next(err);// pass errors to Express
       console.log(result);
       if (result.rowCount == 0) {
           client.query('INSERT INTO Users (name, pictureUrl) VALUES ($1, $2)', [name,    'http://i.imgur.com/CTil4ns.jpg'], function (err, result) {
-            console.log("I inserted " + name + " as a user");
           });
       }
 
       client.query('INSERT INTO Tweets (userId, content) VALUES ((SELECT id from Users where name=$1), $2)', [name, content], function (err, result) {
-        console.log("I inserted tweet " + content);
-      });
+        // if (tags.length > 0) {
+        // for(let tag of tags) {
+        //   client.query('INSERT INTO Tags (tweetid, content) VALUES ((SELECT id from Users where name=$1), $2)', [tag], function (err, result) {
+        // });
+        // }
+      // }
 
+      });
 
     res.redirect('/');
 
@@ -87,4 +91,8 @@ module.exports = function makeRouterWithSockets (io) {
 
 
   return router;
+
+
 }
+
+//regex ignores space & ,
